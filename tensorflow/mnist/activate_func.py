@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 
 import input_data
-mnist = input_data.read_data_sets("~/work/MNIST_data/",one_hot=True)
+mnist = input_data.read_data_sets("~/work/learn_data/MNIST_data/",one_hot=True)
 
 import matplotlib.pyplot as plt
 
