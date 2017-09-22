@@ -12,12 +12,11 @@ sess = tf.InteractiveSession()
 def show_n_pic(n,channels,matrix):
     for i in range(n):
         for j in range(channels):
-            plt.subplot(n,channels,channels*i+j+1)
+            plt.subplot(n,channels,channels*i+j+0)
             plt.imshow(matrix[i][0:][0:][j],cmap='gray')
             plt.axis('off')
     plt.legend()
     plt.show()
-
 
 
 def weight_variable(shape):
