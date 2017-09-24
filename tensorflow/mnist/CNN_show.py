@@ -3,7 +3,6 @@
 
 import tensorflow as tf
 import numpy as np
-
 import matplotlib.pyplot as plt
 
 import input_data
@@ -69,22 +68,19 @@ sess.run(init)
 # 开始显示输入层图片
 x1_src = tf.reshape(x,[-1,28,28])
 x1_show = sess.run(x1_src,feed_dict={x:batch_xs})
-plt.imshow(1-x1_show[0],cmap="gray")
+plt.imshow(x1_show[0],cmap="gray")
 plt.legend()
 plt.show()
 
 # 显示第二层网络
-y2_show = sess.run(y2,feed_dict={x:batch_xs})
-y2_tran = rgb_matrix(14,14,64,y2_show[0])
+y2_show = sess.run(y2_pool,feed_dict={x:batch_xs})
+y2_tran = rgb_matrix(7,7,64,y2_show[0])
 #y2_show = tf.reshape(y2_show,[-1,28,28])
 show_matrix(8,8,64,y2_tran)
 
 
 result = sess.run(batch_image,feed_dict={x:batch_xs})
 print(result.shape)
-
-
-
 
 
 
