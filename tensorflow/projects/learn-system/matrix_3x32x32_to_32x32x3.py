@@ -3,6 +3,22 @@ import tensorflow as tf
 import numpy as np
 
 import matplotlib.pyplot as plt
+
+# batch_matrix 代表[batch,channel,h,w] or [batch,h,w,channel]
+# model: 0 代表 输入是上边第一种，1代表上边第二种
+def batch_exchange(batch_matrix,batchs,channels,height,weight,model):
+    if model==0:
+        dist = np.zeros((batchs,height,weight,channels))
+        for i in range(batchs):
+            for (h,w) in range(height,weight):
+                dist[i][h][w][0] = batch_matrix[i][0][h][w]
+                dist[i][h][w][1] = batch_matrix[i][1][h][w]
+                dist[i][h][w][2] = batch_matrix[i][2][h][w]
+
+    else :
+        dist = np.zeros((batchs,channels,height,weight))
+
+
 # 读取单个的batch文件
 def unpickle(file):
     import cPickle

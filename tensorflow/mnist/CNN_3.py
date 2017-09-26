@@ -89,7 +89,8 @@ init = tf.global_variables_initializer()
 
 sess.run(init)
 
-for i in range(4000):
+# 这里设置为30000，精度可达到0.9928
+for i in range(30000):
     batch = mnist.train.next_batch(50)
     if i%50 ==0:
         train_accuracy = accuracy.eval(feed_dict={x:batch[0],y_:batch[1],keep_prob:1.0})
