@@ -90,20 +90,3 @@ for i in range(2000):
 print("test accuracy %g"%accuracy.eval(feed_dict={x:mnist.test.images,y_:mnist.test.labels,keep_prob:1.0}))
 
 
-# 开始显示输入层图片
-#x1_src = tf.reshape(x,[-1,28,28])
-#x1_show = sess.run(x1_src,feed_dict={x:batch_xs})
-#plt.imshow(x1_show[0],cmap="gray")
-#plt.legend()
-#plt.show()
-
-# 显示第二层网络
-#y2_show = sess.run(y2_pool,feed_dict={x:batch_xs})
-#y2_tran = rgb_matrix(7,7,64,y2_show[0])
-#y2_show = tf.reshape(y2_show,[-1,28,28])
-#show_matrix(8,8,64,y2_tran)
-
-
-#result = sess.run(batch_image,feed_dict={x:batch_xs})
-#print(result.shape)
-
