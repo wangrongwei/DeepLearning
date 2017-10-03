@@ -19,10 +19,11 @@ class Dataset():
     # __init__ 是析构函数 
     def __init__(self):
         print("init\n")
-        self.data = []
-        self.labels = []
-        self.batchs = []
-        self.num = 1
+        self.data = np.zeros((50000,32,32,3))
+        self.labels = np.zeros((50000,10))
+        self.batch_x = np.zeros((50,32,32,3))
+        self.batch_y = np.zeros((50,10))
+        self.num = 0
         self.rand = 0
     """ 读取数据 """
     def read_data(self,matrix,label):
@@ -32,9 +33,11 @@ class Dataset():
     """ 固定大小的batch == 50 """
     def next_batchs(self,num):
         self.num = num
-        self.batch_x = data[num:num+49]
-        self.batch_y = labels[num:num+49] 
-        return batch_x,batch_y
+        #for i in range(self.num):
+        self.batch_x = self.data[self.num:self.num+50][:][:][:]
+        self.batch_y = self.labels[self.num:self.num+50][:]
+        #print(self.batch_y)
+        return self.batch_x,self.batch_y
 
 CIFAR10 = Data_set()
 CIFAR10.manage = Dataset()
@@ -97,7 +100,17 @@ end_time = time.time() - start_time
 print("end_time:{0:f}\n".format(end_time))
 # 因为使用imshow将一个矩阵显示为RGB图片，需要
 # 将三个32*32的矩阵合成一个32*32*3的三维矩阵
-cifar10_label = label.reshape([-1,1])
+cifar10_label_1 = label.reshape(-1,1)
+cifar10_label = np.zeros((50000,10))
+
+for i in range(50000):
+    for j in range(10):
+        if cifar10_label_1[i] == j:
+            cifar10_label[i][j] = 1
+        else:
+            cifar10_label[i][j] = 0
+
+
 cifar10 = X.transpose((0,2,3,1))
 
 CIFAR10.manage.read_data(cifar10,cifar10_label)
@@ -114,7 +127,7 @@ CIFAR10.manage.read_data(cifar10,cifar10_label)
 
 """ 第三部分：开始布置卷积神经网络 """
 def kernel_variable(shape):
-    kernel = tf.truncated_normal(shape=shape,stddev=0.1)
+    kernel = tf.truncated_normal(shape=shape,stddev=5e-2)
     return tf.Variable(kernel)
 def bias(shape):
     b = tf.constant(0.1,shape=shape)
@@ -125,18 +138,18 @@ def conv2d(x,W):
 def max_pool2x2(x):
     return tf.nn.max_pool(x,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')
 
-x = tf.placeholder('float',shape=[None,784])
+x = tf.placeholder('float',shape=[None,32,32,3])
 y_ = tf.placeholder('float',shape=[None,10])
 
 # 卷积神经网络第一层参数
-W1 = kernel_variable([5,5,3,32])
-b1 = bias([32])
-x_image = tf.reshape(x,[-1,32,32,1])
-y1 = conv2d(x_image,W1) + b1
+W1 = kernel_variable([5,5,3,64])
+b1 = bias([64])
+#x_image = tf.reshape(x,[-1,32,32,1])
+y1 = conv2d(x,W1) + b1
 y1_pool = tf.nn.relu(max_pool2x2(y1))
 
 # 卷积神经网络第二层
-W2 = kernel_variable([5,5,32,64]) 
+W2 = kernel_variable([5,5,64,64]) 
 b2 = bias([64])
 y2 = conv2d(y1_pool,W2) + b2
 y2_pool = tf.nn.relu(max_pool2x2(y2))
@@ -164,7 +177,10 @@ init = tf.global_variables_initializer()
 sess.run(init)
 
 for i in range(1000):
-    batch_xs,batch_ys = CIFAR10.manage.next_batchs(50*i)
+    batch_xs,batch_ys = CIFAR10.manage.next_batchs(i*50)
+    #print(batch_xs.shape)
+    #print('\n')
+    #print(batch_ys.shape)
     if i%50 ==0:
         train_accuracy = sess.run(accuracy,feed_dict={x:batch_xs,y_:batch_ys,
             keep_prob:1.0})
