@@ -191,4 +191,3 @@ for i in range(1000):
 #   y_:mnist.test.labels,keep_prob:1.0}))
 
 
-
